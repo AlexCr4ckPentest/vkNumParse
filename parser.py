@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 # Parsing phone numbers from vk groups
 # Coded by: AlexCr4ckPentest
 # https://github.com/AlexCr4ckPentest/vkNumParse
