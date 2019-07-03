@@ -1,3 +1,4 @@
 bs4
-vk_api
+#vk_api
 termcolor
+#PrettyTable
