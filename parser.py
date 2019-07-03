@@ -27,6 +27,9 @@ def parse_html_page(html_page):
 
 def main():
     if (args.file): name = args.file
+    else:
+        parser.print_help()
+        exit(1)
     try:
         with (open(name, "r")) as file:
             for url in file:
