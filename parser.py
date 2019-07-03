@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+# Parsing phone numbers from vk groups
+# Coded by: AlexCr4ckPentest
+# https://github.com/AlexCr4ckPentest/vkNumParse
+
 import vk_api
 import subprocess as sp
 import urllib.request as ur
@@ -12,6 +17,8 @@ parser.add_argument("-o", "--out", action="store", dest="out",
                             help="Output file name with phone numbers")
 args = parser.parse_args()
 
+have_num = 0
+
 def log_vk(login, passwd):
     vk_s = vk_api.VkApi(login, passwd)
     vk_s.auth()
@@ -23,21 +30,25 @@ def get_html_page(url):
     return page.read()
 
 def parse_html_pages(html_page, profile):
-    soup = BeautifulSoup(html_page, "html.parser")
+    soup = BeautifulSoup(html_page, "lxml")
     body = soup.find("body")
     a_num = body.find("a", class_="si_phone")
     if (a_num != None):
         for num in a_num: number = num
         if (args.out):
-            with (open(args.out, "w")) as out_file:
-                out_file.write("[%s] Phone number found: %s" %(profile, number))
+            with (open(args.out, "a")) as out_file:
+                out_file.write("[%s] Phone number found: %s\n" %(profile, number))
         else:
             print(colored("[%s] Phone number found: %s" %(profile, number), "green"))
+        global have_num
+        have_num += 1
     else:
+        # Uncomment next line if you want see profiles without phone number
         #print(colored("[%s] Phone number is not found" %profile, "red"))
         pass
 
 def main():
+    global have_num
     offset = 0
     count = 0
     members = []
@@ -52,10 +63,12 @@ def main():
             offset += 1000
             if (offset > resp["count"]):
                 break
+        print(colored("[+] Found %d members!" %len(members), "green"))
         for id in members:
             #print("https://vk.com/id"+str(id))
             page = get_html_page("https://vk.com/id"+str(id))
             parse_html_pages(page, "https://vk.com/id"+str(id))
+        print(colored("[+] Found %d members with phone number!" %have_num, "green"))
     except ue.HTTPError:
         print(colored("[-] Page '%s' is not found!" %url, "red"))
     except ValueError:
