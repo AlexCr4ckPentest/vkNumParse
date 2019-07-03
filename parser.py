@@ -9,6 +9,7 @@ import urllib.error as ue
 from bs4 import BeautifulSoup
 from termcolor import colored
 from argparse import ArgumentParser as argp
+from modules.banner import get_banner
 
 parser = argp()
 parser.add_argument("-o", "--out", action="store", dest="out",
@@ -35,6 +36,7 @@ def parse_html_pages(html_page, profile):
         for num in a_num: number = num
         if (args.out):
             with (open(args.out, "a")) as out_file:
+                print(colored("[%s] Phone number found: %s" %(profile, number), "green"))
                 out_file.write("[%s] Phone number found: %s\n" %(profile, number))
         else:
             print(colored("[%s] Phone number found: %s" %(profile, number), "green"))
@@ -51,6 +53,9 @@ def main():
     count = 0
     members = []
     try:
+        banner = get_banner()
+        print(colored(banner, "cyan"))
+        print
         log = str(input(colored("[Auth] Enter your vk login: ", "cyan")))
         passwd = str(input(colored("[Auth] Enter vk password: ", "cyan")))
         vk_session = log_vk(log, passwd)
