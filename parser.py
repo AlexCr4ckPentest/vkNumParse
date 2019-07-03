@@ -42,7 +42,7 @@ def parse_html_pages(html_page, profile):
         global have_num
         have_num += 1
     else:
-        # Uncomment next line if you want see profiles without phone number
+        # Uncomment next line if you want outputting of profiles without phone number
         #print(colored("[%s] Phone number is not found" %profile, "red"))
         pass
 
@@ -57,14 +57,14 @@ def main():
         vk_session = log_vk(log, passwd)
         gr_id = str(input("Enter id of group: "))
         while True:
-            resp = vk_session.groups.getMembers(group_id=gr_id, offset=offset)
+            resp = vk_session.groups.getMembers(group_id=gr_id, offset=offset) # get group members
             members += resp["items"]
             offset += 1000
             if (offset > resp["count"]):
                 break
         print(colored("[+] Found %d members!" %len(members), "green"))
         for id in members:
-            #print("https://vk.com/id"+str(id))
+            #print("https://vk.com/id"+str(id)) # for test only!
             page = get_html_page("https://vk.com/id"+str(id))
             parse_html_pages(page, "https://vk.com/id"+str(id))
         print(colored("[+] Found %d members with phone number!" %have_num, "green"))
@@ -72,8 +72,8 @@ def main():
         print(colored("[-] Page '%s' is not found!" %url, "red"))
     except ValueError:
         print(colored("[-] This is not a url!", "red"))
-    except FileNotFoundError:
-        print(colored("[-] No such file: %s" %name, "red"))
+    #except FileNotFoundError:
+    #    print(colored("[-] No such file: %s" %name, "red"))
     except vk_api.exceptions.AuthError:
         print(colored("[-] Wrong password or login!", "red"))
         print(colored("[-] Or switch-off double-factor auth!", "red"))
