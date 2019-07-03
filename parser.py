@@ -4,7 +4,6 @@
 # https://github.com/AlexCr4ckPentest/vkNumParse
 
 import vk_api
-import subprocess as sp
 import urllib.request as ur
 import urllib.error as ue
 from bs4 import BeautifulSoup
@@ -52,12 +51,12 @@ def main():
     count = 0
     members = []
     try:
-        log = str(input("Enter your vk login: "))
-        passwd = str(input("Enter vk password: "))
+        log = str(input(colored("[Auth] Enter your vk login: ", "cyan")))
+        passwd = str(input(colored("[Auth] Enter vk password: ", "cyan")))
         vk_session = log_vk(log, passwd)
-        gr_id = str(input("Enter id of group: "))
-        while True:
-            resp = vk_session.groups.getMembers(group_id=gr_id, offset=offset) # get group members
+        grp_id = str(input(colored("Enter id of group: ", "cyan")))
+        while (True):
+            resp = vk_session.groups.getMembers(group_id=grp_id, offset=offset) # get group members
             members += resp["items"]
             offset += 1000
             if (offset > resp["count"]):
@@ -72,8 +71,6 @@ def main():
         print(colored("[-] Page '%s' is not found!" %url, "red"))
     except ValueError:
         print(colored("[-] This is not a url!", "red"))
-    #except FileNotFoundError:
-    #    print(colored("[-] No such file: %s" %name, "red"))
     except vk_api.exceptions.AuthError:
         print(colored("[-] Wrong password or login!", "red"))
         print(colored("[-] Or switch-off double-factor auth!", "red"))
