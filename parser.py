@@ -55,11 +55,11 @@ def main():
     try:
         banner = get_banner()
         print(colored(banner, "cyan"))
-        print
+        print(colored("-----------------------------------------", "cyan"))
         log = str(input(colored("[Auth] Enter your vk login: ", "cyan")))
         passwd = str(input(colored("[Auth] Enter vk password: ", "cyan")))
         vk_session = log_vk(log, passwd)
-        grp_id = str(input(colored("Enter id of group: ", "cyan")))
+        grp_id = str(input(colored("[id] Enter id of group: ", "cyan")))
         while (True):
             resp = vk_session.groups.getMembers(group_id=grp_id, offset=offset) # get group members
             members += resp["items"]
@@ -80,7 +80,7 @@ def main():
         print(colored("[-] Wrong password or login!", "red"))
         print(colored("[-] Or switch-off double-factor auth!", "red"))
     except KeyboardInterrupt:
-        print("Exit...")
+        print(colored("[!] Exiting...", "yellow"))
 
 if (__name__ == '__main__'):
     main()
