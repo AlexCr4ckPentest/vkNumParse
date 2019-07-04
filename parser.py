@@ -14,9 +14,12 @@ from modules.banner import get_banner
 parser = argp()
 parser.add_argument("-o", "--out", action="store", dest="out",
                             help="Output file name with phone numbers")
+parser.add_argument("-v", "--vebrose", action="store_true",
+                            help="Show all messeges")
 args = parser.parse_args()
 
 have_num = 0
+have_two_num = 0
 
 def log_vk(login, passwd):
     vk_s = vk_api.VkApi(login, passwd)
@@ -29,23 +32,34 @@ def get_html_page(url):
     return page.read()
 
 def parse_html_pages(html_page, profile):
+    global have_num, have_two_num
     soup = BeautifulSoup(html_page, "lxml")
     body = soup.find("body")
-    a_num = body.find("a", class_="si_phone")
-    if (a_num != None):
-        for num in a_num: number = num
-        if (args.out):
-            with (open(args.out, "a")) as out_file:
-                print(colored("[%s] Phone number found: %s" %(profile, number), "green"))
-                out_file.write("[%s] Phone number found: %s\n" %(profile, number))
+    a_num = body.find_all("a", class_="si_phone")
+    if (len(a_num) != 0):
+        for num1 in a_num[0]: number1 = num1
+        if (len(a_num) == 2):
+            for num2 in a_num[1]: number2 = num2
+            if (args.out):
+                with (open(args.out, "a")) as out_file:
+                    print(colored("[%s] Phone number found: %s / %s" %(profile, number1, number2), "green"))
+                    out_file.write("[%s] Phone number found: %s / %s\n" %(profile, number1, number2))
+            else:
+                print(colored("[%s] Phone number found: %s / %s" %(profile, number1, number2), "green"))
+            have_two_num += 1
         else:
-            print(colored("[%s] Phone number found: %s" %(profile, number), "green"))
-        global have_num
+            if (args.out):
+                with (open(args.out, "a")) as out_file:
+                    print(colored("[%s] Phone number found: %s / %s" %(profile, number1), "green"))
+                    out_file.write("[%s] Phone number found: %s / %s\n" %(profile, number1))
+            else:
+                print(colored("[%s] Phone number found: %s" %(profile, number1), "green"))
         have_num += 1
     else:
-        # Uncomment next line if you want outputting of profiles without phone number
-        #print(colored("[%s] Phone number is not found" %profile, "red"))
-        pass
+        if (args.vebrose):
+            print(colored("[%s] Phone number is not found" %profile, "red"))
+        else:
+            pass
 
 def main():
     global have_num
@@ -72,6 +86,7 @@ def main():
             page = get_html_page("https://vk.com/id"+str(id))
             parse_html_pages(page, "https://vk.com/id"+str(id))
         print(colored("[+] Found %d members with phone number!" %have_num, "green"))
+        print(colored("[+] Found %d members with 2 phone numbers!" %have_two_num, "green"))
     except ue.HTTPError:
         print(colored("[-] Page '%s' is not found!" %url, "red"))
     except ValueError:

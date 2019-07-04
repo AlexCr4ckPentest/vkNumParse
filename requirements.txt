@@ -2,4 +2,4 @@ bs4
 lxml
 vk_api
 termcolor
-#PrettyTable
+PrettyTable
