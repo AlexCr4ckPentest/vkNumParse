@@ -50,8 +50,8 @@ def parse_html_pages(html_page, profile):
         else:
             if (args.out):
                 with (open(args.out, "a")) as out_file:
-                    print(colored("[%s] Phone number found: %s / %s" %(profile, number1), "green"))
-                    out_file.write("[%s] Phone number found: %s / %s\n" %(profile, number1))
+                    print(colored("[%s] Phone number found: %s" %(profile, number1), "green"))
+                    out_file.write("[%s] Phone number found: %s\n" %(profile, number1))
             else:
                 print(colored("[%s] Phone number found: %s" %(profile, number1), "green"))
         have_num += 1
