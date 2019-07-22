@@ -3,6 +3,7 @@
 # Coded by: AlexCr4ckPentest
 # https://github.com/AlexCr4ckPentest/vkNumParse
 
+from os inport system
 import vk_api
 import urllib.request as ur
 import urllib.error as ue
@@ -73,6 +74,8 @@ def main():
         log = str(input(colored("[Auth] Enter your vk login: ", "cyan")))
         passwd = str(input(colored("[Auth] Enter vk password: ", "cyan")))
         vk_session = log_vk(log, passwd)
+        system("clear")
+        print(colored("[+] Successful auth!", "green"))
         grp_id = str(input(colored("[id] Enter id of group: ", "cyan")))
         while (True):
             resp = vk_session.groups.getMembers(group_id=grp_id, offset=offset) # get group members
