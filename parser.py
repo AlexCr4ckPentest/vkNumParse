@@ -3,7 +3,7 @@
 # Coded by: AlexCr4ckPentest
 # https://github.com/AlexCr4ckPentest/vkNumParse
 
-from os inport system
+from os import system
 import vk_api
 import urllib.request as ur
 import urllib.error as ue
