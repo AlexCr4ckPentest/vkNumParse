@@ -9,15 +9,18 @@
 # bs4, vk_api, lxml, termcolor
 
 # Before run:
-# $ apt install python3 (if not installed)
+# $ sudo apt install python3 (if not installed)
 # $ pip3 install -r requirements.txt (installing dependencies)
+# For termux:
+# $ apt install python (if not installed)
+# $ bash termux_install.sh
 
 # Run script:
-# $ chmod +x parser.py
-# $ ./parser.py
+# $ chmod +x vknumparse.py
+# $ ./vknumparse.py
 
 # For save result in file, run:
-# $ ./parser.py -o your_file
+# $ ./vknumparse.py -o your_file
 
 # Pre-view (script is running):
 # Enter your vk login: blah-blah-blah...
