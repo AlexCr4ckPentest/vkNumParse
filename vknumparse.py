@@ -22,6 +22,10 @@ args = parser.parse_args()
 have_num = 0
 have_two_num = 0
 
+def remove_cfg():
+    print(colored("[*] Removing vk_config.v2.json...", "cyan"))
+    system("if [ -f vk_config.v2.json ]; then rm vk_config.v2.json; fi")
+
 def log_vk(login, passwd):
     vk_s = vk_api.VkApi(login, passwd)
     vk_s.auth()
@@ -90,6 +94,7 @@ def main():
             parse_html_pages(page, "https://vk.com/id"+str(id))
         print(colored("[+] Found %d members with phone number!" %have_num, "green"))
         print(colored("[+] Found %d members with 2 phone numbers!" %have_two_num, "green"))
+        remove_cfg()
     except ue.HTTPError:
         print(colored("[-] Page '%s' is not found!" %url, "red"))
     except ValueError:
@@ -98,6 +103,7 @@ def main():
         print(colored("[-] Wrong password or login!", "red"))
         print(colored("[-] Or switch-off double-factor auth!", "red"))
     except KeyboardInterrupt:
+        remove_cfg()
         print(colored("[!] Exiting...", "yellow"))
 
 if (__name__ == '__main__'):
