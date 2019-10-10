@@ -16,15 +16,8 @@
 # $ bash termux_install.sh
 
 # Run script:
-# $ chmod +x vknumparse.py
-# $ ./vknumparse.py
+# $ chmod +x parse.py
+# $ ./parse.py
 
-# For save result in file, run:
-# $ ./vknumparse.py -o your_file
-
-# Pre-view (script is running):
-# Enter your vk login: blah-blah-blah...
-# Entet your vk password: your_password
-# Enter id of group: group_id
-# [+] Found 12345 members!
-# [https://vk.com/id******] Phone number found: +12345678910
+# For save result in file run:
+# $ ./parse.py -w your_file
