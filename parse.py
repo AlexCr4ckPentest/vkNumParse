@@ -45,67 +45,70 @@ def get_group_members(vk_session, grp_id, group_m_list):
             break
 
 def main():
-    # Объявление переменных и списков
-    grp_members = []
-    nums_list = []
-    have_num = 0
+    try:
+        # Объявление переменных и списков
+        grp_members = []
+        nums_list = []
+        have_num = 0
 
-    # Авторизация
-    print(colored("-----------------------------------------", "cyan"))
-    log = str(input(colored("[Auth] Enter your vk login: ", "cyan")))
-    passwd = str(input(colored("[Auth] Enter vk password: ", "cyan")))
-    vk_session = log_vk(log, passwd)
-    clear_scr()
-    print(colored("[+] Successful auth!", "green"))
+        # Авторизация
+        print(colored("-----------------------------------------", "cyan"))
+        log = str(input(colored("[Auth] Enter your vk login: ", "cyan")))
+        passwd = str(input(colored("[Auth] Enter vk password: ", "cyan")))
+        vk_session = log_vk(log, passwd)
+        clear_scr()
+        print(colored("[+] Successful auth!", "green"))
 
-    # Добыча id группы и всех ее пользователей
-    grp_id = str(input(colored("[id] Enter id of group: ", "cyan")))
-    get_group_members(vk_session, grp_id, grp_members)
-    print(colored("[+] Found %d members!" %len(grp_members), "green"))
-    sleep(2)
-    clear_scr()
-    print(colored("[+] Parsing startetd at: %s" %ctime(), "green"),
-                    colored("\n[!] Please be patient :)", "yellow"))
-    print(colored("-------------------------------------------------", "cyan"))
+        # Добыча id группы и всех ее пользователей
+        grp_id = str(input(colored("[id] Enter id of group: ", "cyan")))
+        get_group_members(vk_session, grp_id, grp_members)
+        print(colored("[+] Found %d members!" %len(grp_members), "green"))
+        sleep(2)
+        clear_scr()
+        print(colored("[+] Parsing startetd at: %s" %ctime(), "green"),
+                        colored("\n[!] Please be patient :)", "yellow"))
+        print(colored("-------------------------------------------------", "cyan"))
 
-    # Парсинг всех страниц
-    for id in grp_members:
-        html_page = ureq.urlopen("https://vk.com/id"+str(id))
-        a_num = parse_page(html_page.read())
-        print(colored("[*] Scanning "+"https://vk.com/id"+str(id), "cyan"),
-                         colored("(Found: %d)" %have_num, "cyan"), end="\r")
-        if (len(a_num) != 0):
-            # Добавление списка с номером и ссылкой на страницу в финальный список
-            nums_list.append(
-                    [(lambda a_len: a_num[0].get("href")+"/"+a_num[1].get("href") if a_len == 2
-                    else a_num[0].get("href"))(len(a_num)), "https://vk.com/id"+str(id)]
-            )
-            have_num += 1
+        # Парсинг всех страниц
+        for id in grp_members:
+            html_page = ureq.urlopen("https://vk.com/id"+str(id))
+            a_num = parse_page(html_page.read())
+            print(colored("[*] Scanning "+"https://vk.com/id"+str(id), "cyan"),
+                             colored("(Found: %d)" %have_num, "cyan"), end="\r")
+            if (len(a_num) != 0):
+                # Добавление списка с номером и ссылкой на страницу в финальный список
+                nums_list.append(
+                        [(lambda a_len: a_num[0].get("href")+"/"+a_num[1].get("href") if a_len == 2
+                        else a_num[0].get("href"))(len(a_num)), "https://vk.com/id"+str(id)]
+                )
+                have_num += 1
 
-    clear_scr()
-    print(colored("[+] Parsing ended at: %s" %ctime(), "green"))
-    if (len(nums_list) != 0):
-        print(colored("[+] Found %d numbers" %have_num, "green"))
-        if (args.out_file):
-            with open(args.out_file, "w") as file:
-                file.write("Report of parsing at: "+ctime()+"\n")
+        clear_scr()
+        print(colored("[+] Parsing ended at: %s" %ctime(), "green"))
+        if len(nums_list) != 0:
+            print(colored("[+] Found %d numbers" %have_num, "green"))
+            if args.out_file:
+                with open(args.out_file, "w") as file:
+                    file.write("Report of parsing at: "+ctime()+"\n")
+                    for i in range(len(nums_list)):
+                        for j in range(len(nums_list[i])):
+                            file.write(nums_list[i][j]+"\t")
+                        file.write("\n")
+            else:
                 for i in range(len(nums_list)):
                     for j in range(len(nums_list[i])):
-                        file.write(nums_list[i][j]+"\t")
-                    file.write("\n")
+                        print(colored(nums_list[i][j], "green"), end="\t")
+                    print(end="\n")
         else:
-            for i in range(len(nums_list)):
-                for j in range(len(nums_list[i])):
-                    print(colored(nums_list[i][j], "green"), end="\t")
-                print(end="\n")
-    else:
-        print(colored("[-] Found %d numbers" %have_num, "red"))
+            print(colored("[-] Found %d numbers" %have_num, "red"))
 
-if __name__ == "__main__":
-    try:
-        main()
     except uerr.HTTPError:
-        print(colored("[-] Page not found!", "red"))
+        print(colored("\n[-] Page not found!", "red"))
+        if len(nums_list) != 0:
+            for i in range(len(nums_list)):
+                    for j in range(len(nums_list[i])):
+                        print(colored(nums_list[i][j], "green"), end="\t")
+                    print(end="\n")
         exit(1)
     except ValueError:
         print(colored("[-] This is not a url!", "red"))
@@ -116,4 +119,12 @@ if __name__ == "__main__":
         exit(1)
     except KeyboardInterrupt:
         print(colored("\n[-] Interrupted! Exiting...", "red"))
+        if len(nums_list) != 0:
+            for i in range(len(nums_list)):
+                    for j in range(len(nums_list[i])):
+                        print(colored(nums_list[i][j], "green"), end="\t")
+                    print(end="\n")
         exit(1)
+
+if __name__ == "__main__":
+    main()
