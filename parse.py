@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup as BS
 from termcolor import colored
 from argparse import ArgumentParser as argp
 from time import ctime, sleep
+from modules.banner import get_banner
 
 parser = argp()
 
@@ -52,6 +53,7 @@ def main():
         have_num = 0
 
         # Авторизация
+        print(colored(get_banner(), "cyan"))
         print(colored("-----------------------------------------", "cyan"))
         log = str(input(colored("[Auth] Enter your vk login: ", "cyan")))
         passwd = str(input(colored("[Auth] Enter vk password: ", "cyan")))
