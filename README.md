@@ -20,4 +20,4 @@
 # $ ./parse.py
 
 # For save result in file run:
-# $ ./parse.py -w your_file
+# $ ./parse.py -w your_file_name.txt
