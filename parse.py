@@ -20,20 +20,24 @@ parser.add_argument("-w", "--write", action="store", dest="out_file",
 
 args = parser.parse_args()
 
+
 def clear_scr():
     if (sys.platform == "win32"):
         system("cls")
     else:
         system("clear")
 
+
 def log_vk(login, password):
     vk = vk_api.VkApi(login, password)
     vk.auth()
     return vk.get_api()
 
+
 def parse_page(page):
     soup = BS(page, "lxml")
     return soup.find("body").find_all("a", class_="si_phone")
+
 
 def get_group_members(vk_session, grp_id, group_m_list):
     offset = 0
@@ -44,6 +48,7 @@ def get_group_members(vk_session, grp_id, group_m_list):
         offset += 1000
         if offset > resp["count"]:
             break
+
 
 def main():
     try:
