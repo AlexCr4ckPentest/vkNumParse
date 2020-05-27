@@ -21,5 +21,5 @@ Parsing phone numbers from vk groups
 1. $ chmod +x vk_num_parse.py
 1. $ ./vk_num_parse.py
 
-## For save result in file run:
+## For save result in file
 * ./vk_num_parse.py -o your_file_name.txt
