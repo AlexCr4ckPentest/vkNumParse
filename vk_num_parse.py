@@ -62,7 +62,7 @@ def write_to_file(filename, nums_list):
 
 
 def main():
-    if not args.out_file:
+    if not args.out_file or not os.sys.argv:
         arg_parser.print_help()
         exit(0)
 
