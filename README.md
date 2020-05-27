@@ -1,6 +1,6 @@
 # vkNumParse 
 
-## Discription:
+## Discription
 Parsing phone numbers from vk groups
 
 ## Dependencies
