@@ -5,6 +5,7 @@ import vk_api
 import urllib.request as ureq
 import urllib.error as uerr
 
+from getpass import getpass
 from time import ctime
 from termcolor import colored
 from bs4 import BeautifulSoup
@@ -67,21 +68,21 @@ def main():
 
     try:
         log = input(colored("[Auth] Enter your vk login: ", "cyan"))
-        passwd = input(colored("[Auth] Enter vk password: ", "cyan"))
+        passwd = getpass(colored("[Auth] Enter vk password: ", "cyan"))
         vk_session = get_vk_api_session(log, passwd)
 
         clear_scr()
         print(colored("[+] Successful authorization!", "green"))
 
         grp_id = input(colored("[id] Enter id of group: ", "cyan"))
-        members_lst = get_group_members(vk_session, grp_id)
-        print(colored(f"[+] Found {len(members_lst)} members!", "green"))
+        group_members = get_group_members(vk_session, grp_id)
+        print(colored(f"[+] Found {len(group_members)} members!", "green"))
 
         clear_scr()
         print(colored(f"[+] Parsing startetd at: {ctime()}", "green"))
         print(colored("[!] Please be patient :)", "yellow"))
 
-        for id in members_lst:
+        for id in group_members:
             html_page = ureq.urlopen(VK_PAGE_PREFIX+str(id))
             phone_number_tag = parse_page(html_page.read())
             print(colored(f"[*] Scanning {VK_PAGE_PREFIX+str(id)}", "cyan"), colored(f"(Found: {have_num})", "cyan"), end="\r")
