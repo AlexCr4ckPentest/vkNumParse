@@ -14,7 +14,8 @@ from argparse import ArgumentParser
 VK_PAGE_PREFIX = "https://vk.com/id"
 
 arg_parser = ArgumentParser()
-arg_parser.add_argument("-o", "--out", action="store", dest="out_file", help="output filename")
+arg_parser.add_argument("-o", "--out", action="store",
+                        dest="out_file", help="output filename")
 args = arg_parser.parse_args()
 
 
@@ -29,7 +30,8 @@ def get_vk_api_session(login, password):
 
 def parse_page(page):
     page_parser = BeautifulSoup(page, "lxml")
-    phone_number_tag = page_parser.find("body").find_all("a", class_="si_phone")
+    phone_number_tag = page_parser.find(
+        "body").find_all("a", class_="si_phone")
     return phone_number_tag
 
 
@@ -85,7 +87,8 @@ def main():
         for id in group_members:
             html_page = ureq.urlopen(VK_PAGE_PREFIX+str(id))
             phone_number_tag = parse_page(html_page.read())
-            print(colored(f"[*] Scanning {VK_PAGE_PREFIX+str(id)}", "cyan"), colored(f"(Found: {have_num})", "cyan"), end="\r")
+            print(colored(f"[*] Scanning {VK_PAGE_PREFIX+str(id)}", "cyan"),
+                  colored(f"(Found: {have_num})", "cyan"), end="\r")
             if phone_number_tag:
                 nums_list.append(
                     [(lambda a_len: phone_number_tag[0].get("href")+"/"+phone_number_tag[1].get("href") if a_len == 2
@@ -99,27 +102,33 @@ def main():
         write_to_file(output_file, nums_list)
 
     except uerr.HTTPError:
-        print(colored("\n[-] An HTTP error has occurred! The page may not be found!", "red"))
+        print(
+            colored("\n[-] An HTTP error has occurred! The page may not be found!", "red"))
         write_to_file(output_file, nums_list)
         exit(1)
 
     except ValueError:
-        print(colored("[-] Error: A value error has occurred! This is not a url!", "red"))
+        print(
+            colored("[-] Error: A value error has occurred! This is not a url!", "red"))
         exit(2)
 
     except vk_api.exceptions.AuthError:
-        print(colored("[-] Error: An authorization error has occurred! Wrong password or login!", "red"))
-        print(colored("[-] Error: Or turn off two-factor authorization!", "red"))
+        print(colored(
+            "[-] Error: An authorization error has occurred! Wrong password or login!", "red"))
+        print(
+            colored("[-] Error: Or turn off two-factor authorization!", "red"))
         exit(3)
 
     except vk_api.exceptions.Captcha:
-        print(colored("[-] Error: An authorization error has occurred! Captcha needed!", "red"))
+        print(colored(
+            "[-] Error: An authorization error has occurred! Captcha needed!", "red"))
         exit(4)
 
     except KeyboardInterrupt:
         print(colored("\n[-] Interrupt signal handled! Exiting...", "red"))
         write_to_file(output_file, nums_list)
         exit(5)
+
 
 if __name__ == "__main__":
     main()
