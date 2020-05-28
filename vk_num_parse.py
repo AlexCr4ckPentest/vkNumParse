@@ -14,8 +14,7 @@ from argparse import ArgumentParser
 VK_PAGE_PREFIX = "https://vk.com/id"
 
 arg_parser = ArgumentParser()
-arg_parser.add_argument("-o", "--out", action="store",
-                        dest="out_file", help="output filename")
+arg_parser.add_argument("-o", "--out", action="store", dest="out_file", help="output filename")
 args = arg_parser.parse_args()
 
 
@@ -30,8 +29,7 @@ def get_vk_api_session(login, password):
 
 def parse_page(page):
     page_parser = BeautifulSoup(page, "lxml")
-    phone_number_tag = page_parser.find(
-        "body").find_all("a", class_="si_phone")
+    phone_number_tag = page_parser.find("body").find_all("a", class_="si_phone")
     return phone_number_tag
 
 
