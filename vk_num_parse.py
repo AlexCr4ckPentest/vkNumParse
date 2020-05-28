@@ -66,14 +66,14 @@ def main():
     output_file = args.out_file
 
     try:
-        log = str(input(colored("[Auth] Enter your vk login: ", "cyan")))
-        passwd = str(input(colored("[Auth] Enter vk password: ", "cyan")))
+        log = input(colored("[Auth] Enter your vk login: ", "cyan"))
+        passwd = input(colored("[Auth] Enter vk password: ", "cyan"))
         vk_session = get_vk_api_session(log, passwd)
 
         clear_scr()
         print(colored("[+] Successful authorization!", "green"))
 
-        grp_id = str(input(colored("[id] Enter id of group: ", "cyan")))
+        grp_id = input(colored("[id] Enter id of group: ", "cyan"))
         members_lst = get_group_members(vk_session, grp_id)
         print(colored(f"[+] Found {len(members_lst)} members!", "green"))
 
