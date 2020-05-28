@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-# Parsing phone numbers from vk groups
-# Coded by: AlexCr4ckPentest
-
 import os
 import vk_api
 import urllib.request as ureq
@@ -16,9 +13,7 @@ from argparse import ArgumentParser
 VK_PAGE_PREFIX = "https://vk.com/id"
 
 arg_parser = ArgumentParser()
-
 arg_parser.add_argument("-o", "--out", action="store", dest="out_file", help="output filename")
-
 args = arg_parser.parse_args()
 
 
