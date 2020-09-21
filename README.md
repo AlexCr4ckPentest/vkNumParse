@@ -1,13 +1,5 @@
-# vkNumParse 
-
-## Description
+# vkNumParse
 Parsing phone numbers from vk groups
-
-## Dependencies
-1. vk_api
-1. bs4
-1. lxml
-1. termcolor
 
 ## Before run
 1. sudo apt install python3 (if not installed)
