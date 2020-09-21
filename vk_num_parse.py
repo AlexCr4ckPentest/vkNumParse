@@ -18,13 +18,16 @@ arg_parser.add_argument("-o", "--out", action="store", dest="out_file", help="ou
 args = arg_parser.parse_args()
 
 
-def clear_scr(): os.system("clear")
+def clear_scr():
+    if os.sys.platform == "win32":
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
-def get_vk_api_session(login, password):
+def get_vk_api_session(login: str, password: str):
     vk = vk_api.VkApi(login, password)
-    vk.auth()
-    return vk.get_api()
+    return vk.auth().get_api()
 
 
 def parse_page(page):
@@ -33,21 +36,19 @@ def parse_page(page):
     return phone_number_tag
 
 
-def get_group_members(vk_session, group_id):
+def get_group_members(vk_session, group_id: int):
     offset = 0
     members = []
-
     while True:
         resp = vk_session.groups.getMembers(group_id=group_id, offset=offset)
         members.append(resp["items"])
         offset += 1000
         if offset > resp["count"]:
             break
-
     return members
 
 
-def write_to_file(filename, nums_list):
+def write_to_file(filename, nums_list: list):
     if nums_list:
         with open(filename, "w") as file:
             file.write(f"Report of parsing at: {ctime()}\n")
@@ -67,65 +68,59 @@ def main():
     output_file = args.out_file
 
     try:
-        log = input(colored("[Auth] Enter your vk login: ", "cyan"))
-        passwd = getpass(colored("[Auth] Enter vk password: ", "cyan"))
-        vk_session = get_vk_api_session(log, passwd)
+        login = input(colored("[Auth]", "cyan", attrs=["bold"]) + " Enter your login: ")
+        password = getpass(colored("[Auth]", "cyan", attrs=["bold"]) + " Enter your password: ")
+        vk_session = get_vk_api_session(login, password)
 
         clear_scr()
-        print(colored("[+] Successful authorization!", "green"))
+        print(colored("[+]", "green", attrs=["bold"]), "Successful authorization!")
 
-        grp_id = input(colored("[id] Enter id of group: ", "cyan"))
+        grp_id = input(colored("[id]", "cyan", attrs=["bold"]) + " Enter target group id: ")
         group_members = get_group_members(vk_session, grp_id)
-        print(colored(f"[+] Found {len(group_members)} members!", "green"))
+        print(colored("[+]", "green", attrs=["bold"]), f"Found {len(group_members)} members!")
 
         clear_scr()
-        print(colored(f"[+] Parsing startetd at: {ctime()}", "green"))
-        print(colored("[!] Please be patient :)", "yellow"))
+        print(colored("[+]", "green", attrs=["bold"]), "Parsing startetd at:", ctime())
+        print(colored("[!]", "yellow", attrs=["bold"]), "Please be patient :)")
 
-        for id in group_members:
-            html_page = ureq.urlopen(VK_PAGE_PREFIX+str(id))
+        for _id in group_members:
+            html_page = ureq.urlopen(VK_PAGE_PREFIX+str(_id))
             phone_number_tag = parse_page(html_page.read())
-            print(colored(f"[*] Scanning {VK_PAGE_PREFIX+str(id)}", "cyan"),
-                  colored(f"(Found: {have_num})", "cyan"), end="\r")
+            print(colored("[*]", "cyan", attrs=["bold"]), f"Scanning {VK_PAGE_PREFIX+str(_id)}",
+                    colored(f"(Found: {have_num})", "cyan", attrs=["bold"]), end="\r")
             if phone_number_tag:
                 nums_list.append(
                     [(lambda a_len: phone_number_tag[0].get("href")+"/"+phone_number_tag[1].get("href") if a_len == 2
-                        else phone_number_tag[0].get("href"))(len(phone_number_tag)), VK_PAGE_PREFIX+str(id)]
+                        else phone_number_tag[0].get("href"))(len(phone_number_tag)), VK_PAGE_PREFIX+str(_id)]
                 )
                 have_num += 1
 
         clear_scr()
-        print(colored(f"[+] Parsing finished at: {ctime()}", "green"))
-        print(colored(f"[+] Found {have_num} numbers", "green"))
-        write_to_file(output_file, nums_list)
+        print(colored("[+]", "green", attrs=["bold"]), "Parsing finished at:", ctime())
+        print(colored("[+]", "green", attrs=["bold"]), f"Found {have_num} numbers")
 
     except uerr.HTTPError:
-        print(
-            colored("\n[-] An HTTP error has occurred! The page may not be found!", "red"))
-        write_to_file(output_file, nums_list)
+        print(colored("[-]", "red", attrs=["bold"]), "An HTTP error has occurred! The page may not be found!")
         exit(1)
 
     except ValueError:
-        print(
-            colored("[-] Error: A value error has occurred! This is not a url!", "red"))
+        print(colored("[-]", "red", attrs=["bold"]), "Error: A value error has occurred! This is not a url!")
         exit(2)
 
     except vk_api.exceptions.AuthError:
-        print(colored(
-            "[-] Error: An authorization error has occurred! Wrong password or login!", "red"))
-        print(
-            colored("[-] Error: Or turn off two-factor authorization!", "red"))
+        print(colored("[-]", "red", attrs=["bold"]), "Error: An authorization error has occurred! Wrong login or password")
+        print(colored("[-]", "red", attrs=["bold"]), "Or switch-off your double factor authorization!")
         exit(3)
 
     except vk_api.exceptions.Captcha:
-        print(colored(
-            "[-] Error: An authorization error has occurred! Captcha needed!", "red"))
+        print(colored("[-]", "red", attrs=["bold"]), "Error: An authorization error has occurred! Captcha needed!")
         exit(4)
 
     except KeyboardInterrupt:
-        print(colored("\n[-] Interrupt signal handled! Exiting...", "red"))
-        write_to_file(output_file, nums_list)
+        print(colored("[!]", "yellow", attrs=["bold"]), "Interrupt signal handled! Exiting...")
         exit(5)
+    finally:
+        write_to_file(output_file, nums_list)
 
 
 if __name__ == "__main__":
